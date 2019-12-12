@@ -42,7 +42,9 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(
             template_name='users/password_reset_complete.html'), 
         name='password_reset_complete'),
-    path('', include('blog.urls'))
+    path('', include('blog.urls')),
+    # (r'^upload/', staff_member_required(views.upload), name='ckeditor_upload'),
+    path('ckeditor/', include('ckeditor_uploader.urls'))
 ]
 
 if settings.DEBUG:
