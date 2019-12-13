@@ -1,0 +1,20 @@
+{% extends "django_project/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+  {% url 'europe_post_create' as new_post_url %}
+  <div class="content-section">
+    <form method="POST">
+      {% csrf_token %}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Europe 2019 Blog Post</legend>
+        {{ form|crispy }}
+      </fieldset>
+      <div class="form-group">
+        {% if request.path == new_post_url %}
+          <button class="btn btn-outline-info" type="submit">Post</button>
+        {% else %}
+          <button class="btn btn-outline-info" type="submit">Update</button>
+        {% endif %}
+      </div>
+    </form>
+{% endblock content %}

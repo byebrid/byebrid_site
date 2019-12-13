@@ -14,13 +14,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from users import views as user_views
+from django.views.generic import RedirectView
+from django.views.decorators.cache import never_cache
+
+from ckeditor_uploader import views as ckeditor_views
 
 urlpatterns = [
+    # Default page set to Europe blog atm
+    path('', RedirectView.as_view(url='europe_blog/')),
+    
+    path('blog/', include('blog.urls')),
+    path('europe_blog/', include('europe_blog.urls')),
     path('admin/', admin.site.urls),
     path('register/', user_views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
@@ -42,8 +53,6 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(
             template_name='users/password_reset_complete.html'), 
         name='password_reset_complete'),
-    path('', include('blog.urls')),
-    # (r'^upload/', staff_member_required(views.upload), name='ckeditor_upload'),
     path('ckeditor/', include('ckeditor_uploader.urls'))
 ]
 
