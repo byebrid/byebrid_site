@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'index.apps.IndexConfig',
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
     'europe_blog.apps.EuropeBlogConfig',
@@ -134,7 +135,7 @@ CKEDITOR_UPLOAD_PATH = 'uploads/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL = 'blog-home'
+LOGIN_REDIRECT_URL = 'index_home'
 LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

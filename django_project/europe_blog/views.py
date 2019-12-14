@@ -24,13 +24,16 @@ class EuropePostDetailView(DetailView):
     model = EuropePost
 
 
-class EuropePostCreateView(LoginRequiredMixin, CreateView):
+class EuropePostCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = EuropePost
     fields = ['location', 'arrival_date', 'departure_date', 'content']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+    def test_func(self):
+        return self.request.user.is_staff
 
 
 class EuropePostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

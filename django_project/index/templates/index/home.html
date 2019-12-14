@@ -1,0 +1,20 @@
+{% extends 'django_project/base.html' %}
+{% block content %}
+  <h2>Welcome to Lex's website!</h2>
+  <article class="media content-section">
+    <div class="media-body">
+      <div>
+        <h2><a class="article-title" href="{% url 'europe_blog_home' %}">Europe Blog</a></h2>
+      </div>
+      <p class="article-content">From my 2019 Europe trip.</p>
+    </div>
+  </article>
+  <article class="media content-section">
+      <div class="media-body">
+        <div>
+          <h2><a class="article-title" href="{% url 'blog_home' %}">Other Blog</a></h2>
+        </div>
+        <p class="article-content">Some quick info about this other blog goes here.</p>
+      </div>
+    </article>
+{% endblock %}

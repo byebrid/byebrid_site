@@ -17,19 +17,20 @@ from django.contrib import admin
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
-from django.urls import path, include
+from django.urls import path, include, reverse_lazy
 from django.conf import settings
 from django.conf.urls.static import static
 from users import views as user_views
+from index import views as index_views
 from django.views.generic import RedirectView
 from django.views.decorators.cache import never_cache
 
 from ckeditor_uploader import views as ckeditor_views
 
 urlpatterns = [
-    # Default page set to Europe blog atm
-    path('', RedirectView.as_view(url='europe_blog/')),
-    
+    path('', RedirectView.as_view(url=reverse_lazy('index_home'))),
+
+    path('home/', index_views.home, name='index_home'),
     path('blog/', include('blog.urls')),
     path('europe_blog/', include('europe_blog.urls')),
     path('admin/', admin.site.urls),
@@ -37,6 +38,8 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
     path('profile/', user_views.profile, name='profile'),
+
+    # Password reset paths
     path('password-reset/', 
         auth_views.PasswordResetView.as_view(
             template_name='users/password_reset.html'), 
@@ -53,6 +56,8 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(
             template_name='users/password_reset_complete.html'), 
         name='password_reset_complete'),
+
+    # I believe this is required for the widget even if we don't directly access the url 
     path('ckeditor/', include('ckeditor_uploader.urls'))
 ]
 

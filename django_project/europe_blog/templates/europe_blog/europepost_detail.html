@@ -5,7 +5,7 @@
     <div class="media-body">
       <div class="article-metadata">
         <a class="mr-2" href="{% url 'user_posts' object.author.username %}">{{ object.author }}</a>
-        <small class="text-muted">{{ object.date_posted|date:"F j, Y" }}</small>
+        <small class="text-muted">Posted {{ object.date_posted|date:"F j, Y" }}</small>
         {% if object.author == user %}
           <div>
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'europe_post_update' object.id %}">Update</a>
@@ -13,7 +13,8 @@
           </div>
         {% endif %}
       </div>
-      <h2 class="article-title">{{ object.title }}</h2>
+      <h2 class="article-title">{{ object.location }}</h2>
+      <small class="text-muted">{{ object.arrival_date|date:"F j, Y" }} - {{ object.departure_date|date:"F j, Y" }}</small>
       <p class="article-content">{{ object.content|safe }}</p>
     </div>
   </article>
