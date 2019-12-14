@@ -1,4 +1,4 @@
-{% extends "django_project/base.html" %}
+{% extends "blog/base.html" %}
 {% block content %}
   <h1 class="mb-3">{{ page_obj.paginator.count }} Posts by {{ view.kwargs.username }}</h1>
   {% for post in posts %}
