@@ -36,14 +36,14 @@
               <form action="{% url 'europe_post_search' %}" method="get" class="form-inline mr-auto">
                 <div class="md-form my-0">
                   <input name="q" class="form-control" type="text" placeholder="Search Europe Blog" aria-label="Search">
-                  <i class="fas fa-search text-white ml-3" aria-hidden="true"></i>
+                  <button id="button-addon1" type="submit" class="btn btn-link text-primary"><i class="fas fa-search text-white" aria-hidden="true"></i></button>
                 </div>
               </form>
           </div>
           <!-- Navbar Right Side -->
           <div class="navbar-nav">
+            {% block navbar %}{% endblock %}
             {% if user.is_authenticated %}
-              {% block navbar %}{% endblock %}
               {% if user.is_staff %}
                 <a class="nav-item nav-link" href="/admin/">Admin</a>
               {% endif %}
