@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (
     EuropePostListView,
+    EuropePostSearchView,
     EuropePostCreateView,
     EuropePostDetailView,
     EuropePostUpdateView,
@@ -18,4 +19,6 @@ urlpatterns = [
     path('post/<int:pk>/update/', EuropePostUpdateView.as_view(), name='europe_post_update'),
     # Eg: /europe_blog/post/6/delete
     path('post/<int:pk>/delete/', EuropePostDeleteView.as_view(), name='europe_post_delete'),
+    # Eg: /europe_blog/search?q=geneva
+    path('search', EuropePostSearchView.as_view(), name='europe_post_search')
 ]

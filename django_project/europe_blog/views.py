@@ -8,20 +8,29 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-
+from django.db.models import Q # for querysets
 from .models import EuropePost
 
 
-# Create your views here.
 class EuropePostListView(ListView):
     model = EuropePost
     template_name = 'europe_blog/home.html'
-    context_object_name = 'europe_posts'
     ordering = ['-date_posted']
 
 
 class EuropePostDetailView(DetailView):
     model = EuropePost
+
+
+class EuropePostSearchView(ListView):
+    model = EuropePost
+    template_name = 'europe_blog/home.html' # same as normal list view
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        return EuropePost.objects.filter(
+            Q(location__icontains=query) | Q(content__icontains=query)
+        )
 
 
 class EuropePostCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
