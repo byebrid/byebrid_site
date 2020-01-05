@@ -18,7 +18,7 @@ from .models import EuropePost
 class EuropePostListView(ListView):
     model = EuropePost
     template_name = 'europe_blog/home.html'
-    ordering = ['-date_posted']
+    ordering = ['arrival_date']
 
 
 class EuropePostDetailView(DetailView):
@@ -63,19 +63,17 @@ class EuropePostSearchView(ListView):
                     Q(arrival_date__gte=start_of_month, arrival_date__lte=end_of_month) |
                     Q(departure_date__gte=start_of_month, departure_date__lte=end_of_month)
                 )
-                return result
             else:
                 result = EuropePost.objects.filter(arrival_date__lte=query_as_date, departure_date__gte=query_as_date)
-                return result
-
         except Exception as e:
             print(e)
-            pass
+            # If query not recognised as date, compare with contents of blog posts
+            result = EuropePost.objects.filter(
+                Q(location__icontains=query) | Q(content__icontains=query)
+            )
         
-        # If query not recognised as date, compare with contents of blog posts
-        return EuropePost.objects.filter(
-            Q(location__icontains=query) | Q(content__icontains=query)
-        )
+        result = result.order_by('arrival_date')
+        return result
 
 
 class EuropePostCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
