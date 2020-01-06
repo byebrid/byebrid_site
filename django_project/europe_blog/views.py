@@ -18,7 +18,7 @@ from .models import EuropePost
 class EuropePostListView(ListView):
     model = EuropePost
     template_name = 'europe_blog/home.html'
-    ordering = ['arrival_date']
+    ordering = ['-arrival_date']
 
 
 class EuropePostDetailView(DetailView):
@@ -72,7 +72,7 @@ class EuropePostSearchView(ListView):
                 Q(location__icontains=query) | Q(content__icontains=query)
             )
         
-        result = result.order_by('arrival_date')
+        result = result.order_by('-arrival_date')
         return result
 
 
