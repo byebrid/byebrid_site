@@ -1,5 +1,11 @@
 .vscode
 config.json
+# Ignore all files in profile_pics except for default.png
+**/profile_pics/*
+!**/profile_pics/default.png
+**/uploads/*
+!**/uploads/.gitkeep
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
