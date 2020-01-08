@@ -5,6 +5,7 @@ config.json
 !**/profile_pics/default.png
 **/uploads/*
 !**/uploads/.gitkeep
+**/static/*
 
 
 # Byte-compiled / optimized / DLL files
