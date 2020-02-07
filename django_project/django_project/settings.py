@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
     'europe_blog.apps.EuropeBlogConfig',
+    'joe_rogan.apps.JoeRoganConfig',
 
     'crispy_forms',
     'ckeditor',
@@ -149,4 +150,10 @@ EMAIL_HOST_USER = config.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = config.get('EMAIL_PASSWORD')
 
 # Adds a few extra default date formats to django's DateField
-USE_L10N=False
+USE_L10N = False
+
+# ?: (security.W016) You have 'django.middleware.csrf.CsrfViewMiddleware' in 
+# your MIDDLEWARE, but you have not set CSRF_COOKIE_SECURE to True. Using a 
+# secure-only CSRF cookie makes it more difficult for network traffic sniffers 
+# to steal the CSRF token.
+CSRF_COOKIE_SECURE = True
