@@ -1,0 +1,11 @@
+{% extends 'django_project/base.html' %}
+{% block content %}
+  <h2>Joe "Joe Rogan" Rogan</h2>
+  <div class="content-section">
+    <ul class="list-group">
+      {% for quote in quotes %}
+        <li>{{ quote }}</li>
+      {% endfor %}
+    </ul>  
+  </div>
+{% endblock %}

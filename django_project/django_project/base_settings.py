@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
     'europe_blog.apps.EuropeBlogConfig',
+    'joe_rogan.apps.JoeRoganConfig',
 
     'crispy_forms',
     'ckeditor',

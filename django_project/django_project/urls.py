@@ -22,6 +22,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from users import views as user_views
 from index import views as index_views
+from joe_rogan import views as joe_rogan_views
 from django.views.generic import RedirectView
 from django.views.decorators.cache import never_cache
 
@@ -38,6 +39,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
     path('profile/', user_views.profile, name='profile'),
+    path('joe_rogan', joe_rogan_views.home, name='joe_rogan_home'),
     
     # Password reset paths
     path('password-reset/', 
