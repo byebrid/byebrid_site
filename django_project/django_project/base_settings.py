@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 import os
 import json
+import socket
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,10 +25,9 @@ with open(os.path.join(BASE_DIR, 'config.json')) as config_file:
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config.get('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# NOTE: DEBUG gets set to false in production_settings.py
 
-ALLOWED_HOSTS = ['172.105.172.83', 'www.byebrid.com', 'byebrid.com', '127.0.0.1']
+ALLOWED_HOSTS = ['172.105.172.83', 'www.byebrid.com', 'byebrid.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -150,9 +150,3 @@ EMAIL_HOST_PASSWORD = config.get('EMAIL_PASSWORD')
 
 # Adds a few extra default date formats to django's DateField
 USE_L10N = False
-
-# ?: (security.W016) You have 'django.middleware.csrf.CsrfViewMiddleware' in 
-# your MIDDLEWARE, but you have not set CSRF_COOKIE_SECURE to True. Using a 
-# secure-only CSRF cookie makes it more difficult for network traffic sniffers 
-# to steal the CSRF token.
-CSRF_COOKIE_SECURE = True
