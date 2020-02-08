@@ -2,7 +2,8 @@
 {% block content %}
   <h2>Joe "Joe Rogan" Rogan</h2>
   <div class="content-section">
-    <ul class="list-group">
+    <small class="text-muted">Last updated {{ last_updated }}</small>
+    <ul>
       {% for quote in page_obj %}
         <li>{{ quote }}</li>
       {% endfor %}
