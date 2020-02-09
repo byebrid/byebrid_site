@@ -1,5 +1,10 @@
 .vscode
+
+# Specific to my website
 config.json
+joe_rogan.csv
+
+
 # Ignore all files in profile_pics except for default.png
 **/profile_pics/*
 !**/profile_pics/default.png

@@ -12,6 +12,12 @@
         <p class="article-content">{{ post.content|safe }}</p>
       </div>
     </article>
+  {% empty %}
+    <article class="media content-section">
+      <div class="media-body">
+        <p class="article-content">No results were found :(</p>
+      </div>
+    </article>
   {% endfor %}
   {% if is_paginated %}
 

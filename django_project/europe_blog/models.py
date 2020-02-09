@@ -18,4 +18,4 @@ class EuropePost(models.Model):
         return f'{self.location}: {self.arrival_date}'
 
     def get_absolute_url(self):
-        return reverse('europe_post_detail', kwargs={'pk': self.pk})
+        return reverse('europe_blog_home')
