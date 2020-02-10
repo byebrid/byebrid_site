@@ -3,33 +3,20 @@
   <h2>Joe "Joe Rogan" Rogan</h2>
   <div class="content-section">
     <small class="text-muted">Last updated {{ last_updated }}</small>
-    <ul>
-      {% for quote in page_obj %}
-        <li>{{ quote }}</li>
+      {% for title, video in videos.items %}
+        <article class="media content-section">
+          <div class="media-body">
+            <h2><a class="article-title" href="{{ video.url }}">{{ title }}</a></h2>
+            <img src="{{ video.thumbnail.url }}" alt="Youtube video thumbnail" style="width:100%;">
+            <p class="article-content">
+              <ul>
+              {% for quote in video.quotes %} 
+                <li>{{ quote|safe }}</li>
+              {% endfor %}
+              </ul>
+            </p>
+          </div>
+        </article>
       {% endfor %}
-    </ul>
   </div>
-
-  {% if page_obj.has_previous %}
-    <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-    {% if page_obj.number != 2 %}
-      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-    {% endif %}
-  {% endif %}
-
-  {% for num in page_obj.paginator.page_range %}
-    {% if page_obj.number == num %}
-      <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3'%}
-      <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
-    {% endif %}
-  {% endfor %}
-
-  {% if page_obj.has_next %}
-    {% if page_obj.next_page_number != page_obj.paginator.num_pages %}
-      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-    {% endif %}
-    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-  {% endif %}
-
 {% endblock %}
