@@ -1,8 +1,6 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 import json
 
-# Create your models here.
 
 class JoeRoganPost(models.Model):
     video_id = models.CharField(max_length=32)
