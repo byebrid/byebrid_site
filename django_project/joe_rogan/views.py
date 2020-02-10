@@ -1,40 +1,34 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.core.paginator import Paginator
+from django.views.generic import ListView
 import os
 import datetime
 import pytz
 import json
 
+from .models import JoeRoganPost
+
 BASE_DIR = settings.BASE_DIR
 
 
-def home(request):
-    filepath = os.path.join(BASE_DIR, 'joe_rogan', 'joe_rogan.json')
-    with open(filepath, 'r') as f:
-        videos = json.load(f)
+class JoeRoganListView(ListView):
+    model = JoeRoganPost
+    context_object_name = 'video'
+    template_name = 'joe_rogan/home.html'
 
-    for title in list(videos.keys()):
-        if len(videos[title]['quotes']) == 0:
-            videos.pop(title)
-        else:
-            id = videos[title]['id']
-            url = f'https://www.youtube.com/watch?v={id}'
-            videos[title]['url'] = url
+    paginate_by = 5
 
-    last_updated_time = os.path.getmtime(filepath)
-    tz = pytz.timezone('Australia/Melbourne')
-    last_updated_date = datetime.datetime.fromtimestamp(last_updated_time, tz)
-    last_updated_display = last_updated_date.strftime('%a %-d %b, %Y')
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
 
-    # paginator = Paginator(quotes, 50)
-    # page_number = request.GET.get('page')
-    # page_obj = paginator.get_page(page_number)
+        # Adding last_updated attribute to know when json was last modified
+        filepath = os.path.join(BASE_DIR, 'joe_rogan', 'joe_rogan.json')
+        last_updated_time = os.path.getmtime(filepath)
+        tz = pytz.timezone('Australia/Melbourne')
+        last_updated_date = datetime.datetime.fromtimestamp(last_updated_time, tz)
+        last_updated_display = last_updated_date.strftime('%a %-d %b, %Y')
 
-    context = {
-        'title': "Joe \"Joe Rogan\" Rogan",
-        'videos': videos,
-        # 'page_obj': page_obj,
-        'last_updated': last_updated_display
-    }
-    return render(request, 'joe_rogan/home.html', context=context, )
+        context['last_updated'] = last_updated_display
+        return context

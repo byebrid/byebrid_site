@@ -39,7 +39,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
     path('profile/', user_views.profile, name='profile'),
-    path('joe_rogan', joe_rogan_views.home, name='joe_rogan_home'),
+    path('joe_rogan', joe_rogan_views.JoeRoganListView.as_view(), name='joe_rogan_home'),
     
     # Password reset paths
     path('password-reset/', 
