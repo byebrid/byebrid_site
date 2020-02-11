@@ -13,7 +13,15 @@
           <p class="article-content">
             <ul>
             {% for quote in joe_rogan_post.quotes %} 
-              <li>{{ quote|safe }}</li>
+              {% if quote.like_count == 0 and quote.replies == 0 %}
+                <li>{{ quote.text|safe }}</li>
+              {% elif quote.like_count == 0 %}
+                <li>{{ quote.text|safe }} ({{ quote.replies }} <i class="far fa-comment-dots"></i>)</li>
+              {% elif quote.replies == 0 %}
+                <li>{{ quote.text|safe }} ({{ quote.like_count }} <i class="far fa-thumbs-up"></i>)</li>
+              {% else %}
+                <li>{{ quote.text|safe }} ({{ quote.like_count }} <i class="far fa-thumbs-up"></i> & {{ quote.replies }} <i class="far fa-comment-dots"></i>)</li>
+              {% endif %}
             {% endfor %}
             </ul>
           </p>

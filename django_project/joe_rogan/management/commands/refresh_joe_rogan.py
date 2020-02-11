@@ -23,18 +23,15 @@ class Command(BaseCommand):
         JoeRoganPost.posts.all().delete()
 
         for title, post in joe_rogan_posts.items():
-            # print(f"video_id={post['id']}")
-            # print(f"title={title}")
-            # print(f"thumbnail_url={post['thumbnail']['url']}")
-            # print(f"quotes={post['quotes']}")
+            quotes = post['quotes']
+            if len(quotes) == 0:
+                continue
 
-            quotes_str = json.dumps(post['quotes'])
-
+            quotes_str = json.dumps(quotes)
             JoeRoganPost.posts.create(
                 video_id=post['id'],
                 title=title,
                 thumbnail_url=post['thumbnail']['url'],
                 _quotes=quotes_str
             )
-
             self.stdout.write(self.style.SUCCESS(f"Succesfully created Joe Rogan post from video {post['id']}"))
