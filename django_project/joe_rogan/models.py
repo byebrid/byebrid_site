@@ -7,7 +7,8 @@ class JoeRoganPost(models.Model):
     title = models.CharField(max_length=64)
     thumbnail_url = models.CharField(max_length=64)
     # THIS EXPECTS A JSON-FORMATTED STRING!
-    _quotes = models.CharField(max_length=2048, default='[]')
+    _quotes = models.CharField(max_length=8192, default='[]')
+
     posts = models.Manager()
 
     @property
