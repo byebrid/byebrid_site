@@ -12,6 +12,7 @@ class or if I should just leave them out. Doesn't really affect functionality
 but something to ponder.
 """
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 from joe_rogan.models import JoeRoganPost
 import json
 import os
