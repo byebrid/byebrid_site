@@ -43,6 +43,9 @@ class Command(BaseCommand):
         """Creates new model from video or, if video already in database, 
         simply updates the `quotes` field in the database.
         """
+        if len(quotes) == 0:
+            return
+            
         quotes_str = json.dumps(video_dict['quotes']) # For CharField in model
         thumbnail = video_dict['thumbnail']
         title = video_dict['title']

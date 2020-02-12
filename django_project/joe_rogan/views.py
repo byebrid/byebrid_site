@@ -18,3 +18,14 @@ class JoeRoganListView(ListView):
     template_name = 'joe_rogan/home.html'
 
     paginate_by = 5
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        last_modified = JoeRoganPost.posts.first().modified
+        tz = pytz.timezone('Australia/Melbourne')
+        last_modified = last_modified.astimezone(tz)
+        last_modified_str = last_modified.strftime('%a %-d %b, %Y')
+
+        context['last_updated'] = last_modified_str
+        return context

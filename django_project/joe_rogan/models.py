@@ -20,7 +20,8 @@ class JoeRoganPost(models.Model):
 
     @property
     def quotes(self):
-        return json.loads(self._quotes)
+        quotes = json.loads(self._quotes)
+        return [quote for quote in sorted(quotes, key=lambda quote: quote['like_count'] + quote['replies'], reverse=True)]
 
     def __str__(self):
         return f'{self.video_id}: {self.title}'
