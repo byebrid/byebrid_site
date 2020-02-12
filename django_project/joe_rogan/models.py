@@ -9,6 +9,9 @@ class JoeRoganPost(models.Model):
     # THIS EXPECTS A JSON-FORMATTED STRING!
     _quotes = models.CharField(max_length=8192, default='[]')
 
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
     posts = models.Manager()
 
     @property
