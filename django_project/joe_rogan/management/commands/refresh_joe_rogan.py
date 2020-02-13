@@ -61,7 +61,7 @@ class Command(BaseCommand):
 
         # The ``channel_id`` corrseponds to JRE Clips youtube channel
         for i, video in enumerate(self.get_videos_from_channel(channel_id='UCnxGkOGNMqQEUMvroOWps6Q')):
-            video_id = video['id']
+            video_id = video['video_id']
 
             if not options['overwrite']:
                 model_already_created = JoeRoganPost.posts.filter(video_id=video_id)
@@ -70,7 +70,7 @@ class Command(BaseCommand):
                     continue
                     
             title = video['title']
-            thumbnail = video['thumbnail']['url']
+            thumbnail = video['thumbnail']
             video_dict = {
                 'title': title,
                 'video_id': video_id,
@@ -161,7 +161,7 @@ class Command(BaseCommand):
         Yields 
         ------
         {
-            'id': <video's id>, 
+            'video_id': <video's id>, 
             'title': <video's title>,
             'thumbnail': <video's maximum resolution thumbnail>
         }
@@ -172,19 +172,23 @@ class Command(BaseCommand):
             Can be found in the url of a youtube playlist.
         """
         response = self.get_response(methods=['playlistItems', 'list'],
-            part='contentDetails,snippet',
+            part='snippet',
             playlistId=playlist_id,
             maxResults=50
         )
 
         while response:
             for item in response['items']:
-                id = item['contentDetails']['videoId']
+                video_id = item['snippet']['resourceId']['videoId']
                 title = item['snippet']['title']
-                thumbnail = item['snippet']['thumbnails']['maxres']
+                # Getting best resoultion thumbnail
+                for resolution in ['maxres', 'high', 'medium', 'default']:
+                    if resolution in item['snippet']['thumbnails']:
+                        thumbnail = item['snippet']['thumbnails'][resolution]['url']
+                        break
 
                 yield {
-                    'id': id,
+                    'video_id': video_id,
                     'title': title,
                     'thumbnail': thumbnail
                 }
