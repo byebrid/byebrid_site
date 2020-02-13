@@ -3,7 +3,7 @@ import json
 
 
 class JoeRoganPost(models.Model):
-    video_id = models.CharField(max_length=32)
+    video_id = models.CharField(max_length=32, unique=True)
     title = models.CharField(max_length=64)
     thumbnail_url = models.CharField(max_length=64)
     # THIS EXPECTS A JSON-FORMATTED STRING!

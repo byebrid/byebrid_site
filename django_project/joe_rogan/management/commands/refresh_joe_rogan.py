@@ -9,7 +9,8 @@ python manage.py refresh_joe_rogan
 
 NOTE: Not sure if it would be better to place functions as methods in Command
 class or if I should just leave them out. Doesn't really affect functionality 
-but something to ponder.
+but something to ponder (actually uses self.stdout.write so does slightly 
+affect functionality).
 """
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
@@ -43,10 +44,11 @@ class Command(BaseCommand):
         """Creates new model from video or, if video already in database, 
         simply updates the `quotes` field in the database.
         """
+        quotes = video_dict['quotes']
         if len(quotes) == 0:
             return
             
-        quotes_str = json.dumps(video_dict['quotes']) # For CharField in model
+        quotes_str = json.dumps(quotes) # For CharField in model
         thumbnail = video_dict['thumbnail']
         title = video_dict['title']
         video_id = video_dict['video_id']
@@ -64,7 +66,11 @@ class Command(BaseCommand):
             )
             self.stdout.write(self.style.SUCCESS(f"Succesfully created Joe Rogan post from video {video_id}"))
 
-
+    def add_arguments(self, parser):
+        parser.add_argument('--overwrite', action='store_true',
+            help='Recommended to not use this. If this option is provided, videos will NOT be skipped over if they are already in the database (poor use of API quota).'
+        )
+        
     def handle(self, *args, **options):
         """The meat and bones of the management command. Where the API is 
         actually called upon and where comments are filtered out. Also adds the
@@ -73,45 +79,32 @@ class Command(BaseCommand):
         # The regex used to find comments with those quotes
         joe_rogan_re = re.compile('Joe .* Rogan', flags=re.I)
 
-        visited_videos = []
-        videos = []
         # The ``channel_id`` corrseponds to JRE Clips youtube channel
         for i, video in enumerate(get_videos_from_channel(service=service, channel_id='UCnxGkOGNMqQEUMvroOWps6Q')):
             video_id = video['id']
+
+            if not options['overwrite']:
+                model_already_created = JoeRoganPost.posts.filter(video_id=video_id)
+                # Not sending any more requests if we already have this video in database
+                if model_already_created and model_already_created[0] != JoeRoganPost.posts.last():
+                    continue
+                    
             title = video['title']
             thumbnail = video['thumbnail']['url']
-
-            print(f'Working on {title}...')
-
-            # May happen if new uploads while script is running
-            if video_id in visited_videos:
-                continue
-            else:
-                visited_videos.append(video_id) 
-
-            videos.append({
+            video_dict = {
                 'title': title,
                 'video_id': video_id,
                 'thumbnail': thumbnail,
                 'quotes': []
-            })
-
+            }
             # Filtering those Joe Rogan comments from all comments on video
             for comment in get_comments(service=service, video_id=video_id):
                 match = joe_rogan_re.match(comment['text'])
                 if match is not None:
                     comment['text'] = match.group()
-                    videos[-1]['quotes'].append(comment)
+                    video_dict['quotes'].append(comment)
 
-            # Can modify `i` to write to file in larger chunks
-            if i % 5 == 4:
-                for video in videos:
-                    self.create_model(video_dict=video)
-                videos = []
-
-        # Make sure to write remaining videos to file too
-        for video in videos:
-            self.create_model(video_dict=video)
+            self.create_model(video_dict=video_dict)
     
 
 def get_response(service_call, method, **kwargs):
