@@ -250,7 +250,6 @@ class Command(BaseCommand):
         def get_request():
             """Uses given ``methods`` to get a request object which we can 
             execute to get a response."""
-            # self.stdout.write(f'Getting request from methods = {methods}')
             request = self.service
             for method in methods[:-1]:
                 request = getattr(request, method)

@@ -1,4 +1,6 @@
 {% extends 'django_project/base.html' %}
+{% load joe_rogan_tags %}
+
 {% block navbar %}
   <!-- Searchbar -->
   <form action="{% url 'joe_rogan_search' %}" method="get" class="form-inline mr-auto">
@@ -41,25 +43,28 @@
   </div>
 
   {% if page_obj.has_previous %}
-    <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+    <a class="btn btn-outline-info mb-4" href="?{% url_replace page=1 %}">First</a>
     {% if page_obj.number != 2 %}
-      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+      <a class="btn btn-outline-info mb-4" href="?{% url_replace page=page_obj.previous_page_number %}">Previous</a>
     {% endif %}
   {% endif %}
 
   {% for num in page_obj.paginator.page_range %}
     {% if page_obj.number == num %}
-      <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+      <a class="btn btn-info mb-4" href="?{% url_replace page=num %}">{{ num }}</a>
     {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3'%}
-      <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+      <a class="btn btn-outline-info mb-4" href="?{% url_replace page=num %}">{{ num }}</a>
     {% endif %}
   {% endfor %}
 
   {% if page_obj.has_next %}
-    {% if page_obj.next_page_number != page_obj.paginator.num_pages %}
-      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-    {% endif %}
-    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% with next_page=page_obj.next_page_number last_page=page_obj.paginator.num_pages %}
+      {% if next_page != last_page %}
+        <a class="btn btn-outline-info mb-4" href="?{% url_replace page=next_page %}">Next</a>
+      {% endif %}
+      <a class="btn btn-outline-info mb-4" href="?{% url_replace page=last_page %}">Last</a>
+    {% endwith %}
+
   {% endif %}
 
 {% endblock %}
