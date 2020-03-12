@@ -11,6 +11,24 @@ NOTE: Not sure if it would be better to place functions as methods in Command
 class or if I should just leave them out. Doesn't really affect functionality 
 but something to ponder (actually uses self.stdout.write so does slightly 
 affect functionality).
+
+NOTE: Example comment:
+{
+    "authorDisplayName": "Sol Aries",
+    "authorProfileImageUrl": "https://yt3.ggpht.com/a/AATXAJy-FgC5EKcwinJwurx_qksVNV3OBNkNP4B3=s48-c-k-c0xffffffff-no-rj-mo",
+    "authorChannelUrl": "http://www.youtube.com/channel/UCOKOQINoiZ4bNSZmL5H6mdA",
+    "authorChannelId": {"value": "UCOKOQINoiZ4bNSZmL5H6mdA"},
+    "videoId": "qiW9mQ2YNyo",
+    "textDisplay": "Adesanya has a 7 inch reach advantage. Why does everyone keep talking about the fight as if Romero was supposed to start exchanges?  Romero stood close to motionless and Adesanya was too afraid to engage.  End of Story.  Can every fighter now just run away for 30 minutes and keep his/her title?",
+    "textOriginal": "Adesanya has a 7 inch reach advantage. Why does everyone keep talking about the fight as if Romero was supposed to start exchanges?  Romero stood close to motionless and Adesanya was too afraid to engage.  End of Story.  Can every fighter now just run away for 30 minutes and keep his/her title?",
+    "canRate": True,
+    "viewerRating": "none",
+    "likeCount": 0,
+    "publishedAt": "2020-03-12T06:02:21.000Z",
+    "updatedAt": "2020-03-12T06:02:21.000Z",
+    # This is added by us
+    "text": "quote if found in textDisplay",
+}
 """
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
@@ -18,7 +36,6 @@ from joe_rogan.models import JoeRoganPost
 import json
 import os
 
-# From the original joe-rogan.py file, minus already-imported modules
 from googleapiclient.discovery import build
 import googleapiclient.errors
 import re
@@ -55,6 +72,8 @@ class Command(BaseCommand):
         actually called upon and where comments are filtered out. Also adds the
         results to the database.
         """
+        self.stdout.write('Updating Joe Rogan posts...')
+
         self.service = self.build_service()
         # The regex used to find comments with those quotes
         joe_rogan_re = re.compile('Joe .* Rogan', flags=re.I)
@@ -65,8 +84,9 @@ class Command(BaseCommand):
 
             if not options['overwrite']:
                 model_already_created = JoeRoganPost.posts.filter(video_id=video_id)
-                # Not sending any more requests if we already have this video in database
-                if model_already_created and model_already_created[0] != JoeRoganPost.posts.last():
+                # Not sending any more requests if we already have this video 
+                # in database.
+                if model_already_created:
                     continue
                     
             title = video['title']
@@ -79,12 +99,15 @@ class Command(BaseCommand):
             }
             # Filtering those Joe Rogan comments from all comments on video
             for comment in self.get_comments(video_id=video_id):
-                match = joe_rogan_re.match(comment['text'])
+                comment_text = comment['topLevelComment']['snippet']['textDisplay']
+                match = joe_rogan_re.match(comment_text)
                 if match is not None:
                     comment['text'] = match.group()
                     video_dict['quotes'].append(comment)
 
             self.create_model(video_dict=video_dict)
+
+        self.stdout.write(self.style.SUCCESS('SUCCESFULLY UPDATED ALL JOE ROGAN POSTS.'))
     
     def get_comments(self, video_id):
         """Generator for comments on given youtube video.
@@ -108,14 +131,7 @@ class Command(BaseCommand):
 
         while response:
             for item in response['items']:
-                text = item['snippet']['topLevelComment']['snippet']['textDisplay']
-                like_count = item['snippet']['topLevelComment']['snippet']['likeCount']
-                replies = item['snippet']['totalReplyCount']
-                yield {
-                    'text': text,
-                    'like_count': like_count,
-                    'replies': replies
-                }
+                yield item['snippet']
 
             if 'nextPageToken' in response:
                 page_token = response['nextPageToken']
@@ -312,4 +328,5 @@ class Command(BaseCommand):
             else:
                 self.current_api_key = API_KEYS[new_index]
 
+        self.stdout.write('Service built!')
         return build(serviceName='youtube', version='v3', developerKey=self.current_api_key)

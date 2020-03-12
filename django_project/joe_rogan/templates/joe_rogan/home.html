@@ -25,15 +25,17 @@
           <p class="article-content">
             <ul>
             {% for quote in joe_rogan_post.quotes %} 
-              {% if quote.like_count == 0 and quote.replies == 0 %}
-                <li>{{ quote.text|safe }}</li>
-              {% elif quote.like_count == 0 %}
-                <li>{{ quote.text|safe }} ({{ quote.replies }} <i class="far fa-comment-dots"></i>)</li>
-              {% elif quote.replies == 0 %}
-                <li>{{ quote.text|safe }} ({{ quote.like_count }} <i class="far fa-thumbs-up"></i>)</li>
-              {% else %}
-                <li>{{ quote.text|safe }} ({{ quote.like_count }} <i class="far fa-thumbs-up"></i> & {{ quote.replies }} <i class="far fa-comment-dots"></i>)</li>
-              {% endif %}
+              {% with like_count=quote.topLevelComment.snippet.likeCount reply_count=quote.totalReplyCount %}
+                {% if like_count == 0 and reply_count == 0 %}
+                  <li>{{ quote.text|safe }}</li>
+                {% elif like_count == 0 %}
+                  <li>{{ quote.text|safe }} ({{ reply_count }} <i class="far fa-comment-dots"></i>)</li>
+                {% elif reply_count == 0 %}
+                  <li>{{ quote.text|safe }} ({{ like_count }} <i class="far fa-thumbs-up"></i>)</li>
+                {% else %}
+                  <li>{{ quote.text|safe }} ({{ like_count }} <i class="far fa-thumbs-up"></i> & {{ quote.replies }} <i class="far fa-comment-dots"></i>)</li>
+                {% endif %}
+              {% endwith %}
             {% endfor %}
             </ul>
           </p>
